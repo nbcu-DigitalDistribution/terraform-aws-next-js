@@ -258,7 +258,6 @@ resource "null_resource" "static_s3_upload_awscli" {
 
   provisioner "local-exec" {
     command = <<-EOT
-      chmod +x ./get-creds
       export AWS_ROLE_TO_ASSUME=${var.role_to_assume}
       ./get-creds
       echo $AWS_ACCESS_KEY_ID
