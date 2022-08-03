@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
 AWS_ROLE_TO_ASSUME=${AWS_ROLE_TO_ASSUME:-""}
+REGION=${REGION:-""}
+ARCHIVE_PATH=${ARCHIVE_PATH:-""}
+UPLOAD_ID=${UPLOAD_ID:-""}
+BASENAME=${BASENAME:-""}
 
 aws_credentials=$(aws sts assume-role --role-arn ${AWS_ROLE_TO_ASSUME} --role-session-name "RoleSession1" --output json)
 
@@ -16,3 +20,11 @@ echo $AWS_ACCESS_KEY_ID
 echo $AWS_SECRET_ACCESS_KEY
 echo $AWS_SESSION_TOKEN
 echo $AWS_SECURITY_TOKEN
+
+echo "Passed Variables"
+echo $REGION
+echo $ARCHIVE_PATH
+echo $UPLOAD_ID
+echo $BASENAME
+
+aws s3 cp --region ${REGION} ${ARCHIVE_PATH} s3://${UPLOAD_ID}/${BASENAME}
