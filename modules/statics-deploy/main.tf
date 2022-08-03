@@ -260,6 +260,9 @@ resource "null_resource" "static_s3_upload_awscli" {
     command = <<-EOT
       export AWS_ROLE_TO_ASSUME=${var.role_to_assume}
       ./get-creds
+      echo "CREDS"
+      echo $AWS_ACCESS_KEY_ID
+      echo $AWS_SECURITY_TOKEN
       aws s3 cp --region ${aws_s3_bucket.static_upload.region} ${abspath(var.static_files_archive)} s3://${aws_s3_bucket.static_upload.id}/${basename(var.static_files_archive)}
     EOT
     working_dir = "${path.module}/s3-bash4/bin"
