@@ -209,7 +209,7 @@ module "proxy" {
 
   debug_use_local_packages = var.debug_use_local_packages
   tf_next_module_root      = path.module
-  role_name = var.role_name_prefix
+  role_name_prefix = var.role_name_prefix
 
   providers = {
     aws.global_region = aws.global_region

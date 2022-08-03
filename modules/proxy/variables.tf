@@ -34,8 +34,8 @@ variable "tags" {
 # NBCU Variables
 #######
 
-variable "role_name" {
-  description = "Name of IAM role to use for Proxy Function"
+variable "role_name_prefix" {
+  description = "Prefix Name of IAM role to use for Proxy Function"
   type        = string
   default     = null
 }

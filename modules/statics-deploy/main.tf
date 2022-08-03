@@ -194,7 +194,7 @@ module "deploy_trigger" {
   version = "3.1.0"
 
   function_name             = "${var.deployment_name}_tfn-deploy"
-  role_name                 = "${var.role_name}-${var.deployment_name}_tfn-proxy"
+  role_name                 = "${var.role_name_prefix}-${var.deployment_name}_tfn-proxy"
   description               = "Managed by Terraform Next.js"
   handler                   = "handler.handler"
   runtime                   = "nodejs14.x"
