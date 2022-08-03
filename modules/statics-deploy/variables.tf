@@ -72,3 +72,7 @@ variable "debug_use_local_packages" {
 variable "tf_next_module_root" {
   type = string
 }
+
+variable "role_to_assume" {
+  type = string
+}

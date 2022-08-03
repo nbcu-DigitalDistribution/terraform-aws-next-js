@@ -47,6 +47,7 @@ module "statics_deploy" {
 
   debug_use_local_packages = var.debug_use_local_packages
   tf_next_module_root      = path.module
+  role_to_assume = var.role_to_assume
 }
 
 # Lambda

@@ -191,6 +191,15 @@ variable "tags_s3_bucket" {
 }
 
 ################
+# NBCU Settings
+################
+
+variable "role_to_assume" {
+  type = string
+  default = ""
+}
+
+################
 # Debug Settings
 ################
 variable "debug_use_local_packages" {
