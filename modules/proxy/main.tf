@@ -20,6 +20,7 @@ module "edge_proxy" {
   lambda_at_edge = true
 
   function_name             = "${var.deployment_name}_tfn-proxy"
+  role_name                 = "${var.role_name}-${var.deployment_name}_tfn-proxy"
   description               = "Managed by Terraform Next.js"
   handler                   = "handler.handler"
   runtime                   = var.lambda_default_runtime

@@ -29,9 +29,21 @@ variable "tags" {
   default = {}
 }
 
+
+#######
+# NBCU Variables
+#######
+
+variable "role_name" {
+  description = "Name of IAM role to use for Proxy Function"
+  type        = string
+  default     = null
+}
+
 #######
 # Debug
 #######
+
 variable "debug_use_local_packages" {
   type    = bool
   default = false

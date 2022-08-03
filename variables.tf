@@ -198,12 +198,10 @@ variable "role_to_assume" {
   type = string
   default = ""
 }
-
 variable "use_awscli_cross_account_for_static_upload" {
   type = bool
   default = false
 }
-
 variable "use_source_bucket" {
   type = bool
   default = true
@@ -211,6 +209,10 @@ variable "use_source_bucket" {
 variable "base_origin_url" {
   type = string
   default = ""
+}
+variable "role_name_prefix" {
+  type = string
+  default = "custrole"
 }
 
 ################

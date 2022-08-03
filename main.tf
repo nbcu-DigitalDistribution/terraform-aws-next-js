@@ -48,6 +48,7 @@ module "statics_deploy" {
   tf_next_module_root      = path.module
   role_to_assume = var.role_to_assume
   use_awscli_cross_account_for_static_upload = var.use_awscli_cross_account_for_static_upload
+  role_name = var.role_name_prefix
 }
 
 # Lambda
@@ -148,8 +149,7 @@ data "aws_iam_policy_document" "access_static_deployment" {
 module "next_image" {
   count = var.create_image_optimization ? 1 : 0
 
-  source  = "milliHQ/next-js-image-optimization/aws"
-  version = ">= 12.1.0"
+  source  = "git::https://github.com/nbcu-DigitalDistribution/terraform-aws-next-js-image-optimization.git?ref=nbcu-updates"
 
   cloudfront_create_distribution = false
 
@@ -175,6 +175,7 @@ module "next_image" {
   lambda_role_permissions_boundary = var.lambda_role_permissions_boundary
 
   deployment_name = "${var.deployment_name}_tfn-image"
+  role_name = "${var.role_name_prefix}-${var.deployment_name}_tfn-image"
   tags            = var.tags
 }
 
@@ -208,6 +209,7 @@ module "proxy" {
 
   debug_use_local_packages = var.debug_use_local_packages
   tf_next_module_root      = path.module
+  role_name = var.role_name_prefix
 
   providers = {
     aws.global_region = aws.global_region
