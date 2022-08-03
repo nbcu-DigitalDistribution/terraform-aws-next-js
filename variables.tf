@@ -191,27 +191,6 @@ variable "tags_s3_bucket" {
 }
 
 ################
-# NBCU Custom Variables
-################
-
-variable "role_name_prefix" {
-  description = "role name prefix for the roles created"
-  type        = string
-  default     = "custrole"
-
-  validation {
-    condition     = can(regex("[a-z0-9-]+", var.role_name_prefix))
-    error_message = "Only lowercase alphanumeric characters and hyphens allowed."
-  }
-}
-
-variable "enable_lambda_logging" {
-  description = "enable lambda logging"
-  type = bool
-  default = false
-}
-
-################
 # Debug Settings
 ################
 variable "debug_use_local_packages" {

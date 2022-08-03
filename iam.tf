@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "lambda" {
   for_each = local.lambdas
 
-  name        = "${var.role_name_prefix}-${var.deployment_name}_${each.key}"
+  name        = "${var.deployment_name}_${each.key}"
   description = "Managed by Terraform Next.js"
 
   permissions_boundary = var.lambda_role_permissions_boundary
@@ -64,7 +64,7 @@ resource "aws_iam_policy" "lambda_logging" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  for_each = var.enable_lambda_logging ? local.lambdas : {}
+  for_each = local.lambdas
 
   role       = aws_iam_role.lambda[each.key].name
   policy_arn = aws_iam_policy.lambda_logging.arn
