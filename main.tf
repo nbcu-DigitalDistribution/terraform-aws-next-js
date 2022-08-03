@@ -39,7 +39,6 @@ module "statics_deploy" {
   cloudfront_arn = var.cloudfront_create_distribution ? module.cloudfront_main[0].cloudfront_arn : var.cloudfront_external_arn
 
   lambda_role_permissions_boundary = var.lambda_role_permissions_boundary
-  use_awscli_for_static_upload     = var.use_awscli_for_static_upload
 
   deployment_name = var.deployment_name
   tags            = var.tags
@@ -48,6 +47,7 @@ module "statics_deploy" {
   debug_use_local_packages = var.debug_use_local_packages
   tf_next_module_root      = path.module
   role_to_assume = var.role_to_assume
+  use_awscli_cross_account_for_static_upload = var.use_awscli_cross_account_for_static_upload
 }
 
 # Lambda

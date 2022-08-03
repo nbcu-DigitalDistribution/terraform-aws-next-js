@@ -76,3 +76,7 @@ variable "tf_next_module_root" {
 variable "role_to_assume" {
   type = string
 }
+variable "use_awscli_cross_account_for_static_upload" {
+  type = bool
+  default = false
+}

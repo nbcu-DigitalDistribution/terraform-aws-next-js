@@ -257,13 +257,29 @@ resource "null_resource" "static_s3_upload_awscli" {
   }
 
   provisioner "local-exec" {
+    command = "aws s3 cp --region ${aws_s3_bucket.static_upload.region} ${abspath(var.static_files_archive)} s3://${aws_s3_bucket.static_upload.id}/${basename(var.static_files_archive)}"
+  }
+
+  # Make sure this only runs when the bucket and the lambda trigger are setup
+  depends_on = [
+    aws_s3_bucket_notification.on_create
+  ]
+}
+
+resource "null_resource" "static_s3_upload_awscli_for_cross_account" {
+  count = var.use_awscli_cross_account_for_static_upload ? 1 : 0
+  triggers = {
+    static_files_archive = filemd5(var.static_files_archive)
+  }
+
+  provisioner "local-exec" {
     command = <<-EOT
       export AWS_ROLE_TO_ASSUME=${var.role_to_assume}
       export REGION=${aws_s3_bucket.static_upload.region}
       export ARCHIVE_PATH=${abspath(var.static_files_archive)}
       export UPLOAD_ID=${aws_s3_bucket.static_upload.id}
       export BASENAME=${basename(var.static_files_archive)}
-      ./get-creds
+      ./s3-put-with-sts
     EOT
     working_dir = "${path.module}/s3-bash4/bin"
   }
@@ -275,20 +291,13 @@ resource "null_resource" "static_s3_upload_awscli" {
 }
 
 resource "null_resource" "static_s3_upload" {
-  count = var.use_awscli_for_static_upload ? 0 : 1
+  count = var.use_awscli_for_static_upload || var.use_awscli_cross_account_for_static_upload ? 0 : 1
   triggers = {
     static_files_archive = filemd5(var.static_files_archive)
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
-      export AWS_ROLE_TO_ASSUME=${var.role_to_assume}
-      ./get-creds
-      echo "CREDS"
-      echo $AWS_ACCESS_KEY_ID
-      echo $AWS_SECURITY_TOKEN
-      ./s3-put -r ${aws_s3_bucket.static_upload.region} -T ${abspath(var.static_files_archive)} /${aws_s3_bucket.static_upload.id}/${basename(var.static_files_archive)}
-    EOT
+    command     = "./s3-put -r ${aws_s3_bucket.static_upload.region} -T ${abspath(var.static_files_archive)} /${aws_s3_bucket.static_upload.id}/${basename(var.static_files_archive)}"
     working_dir = "${path.module}/s3-bash4/bin"
   }
 

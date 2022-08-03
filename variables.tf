@@ -199,6 +199,11 @@ variable "role_to_assume" {
   default = ""
 }
 
+variable "use_awscli_cross_account_for_static_upload" {
+  type = bool
+  default = false
+}
+
 ################
 # Debug Settings
 ################
