@@ -166,7 +166,8 @@ module "next_image" {
   next_image_dangerously_allow_SVG   = lookup(local.config_file_images, "dangerouslyAllowSVG", false)
   next_image_content_security_policy = lookup(local.config_file_images, "contentSecurityPolicy", null)
 
-  source_bucket_id = module.statics_deploy.static_bucket_id
+  source_bucket_id = var.use_source_bucket ? module.statics_deploy.static_bucket_id : null
+  next_image_base_origin = !var.use_source_bucket ? var.base_origin_url : null
 
   lambda_memory_size               = var.image_optimization_lambda_memory_size
   lambda_attach_policy_json        = true

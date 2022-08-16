@@ -204,6 +204,15 @@ variable "use_awscli_cross_account_for_static_upload" {
   default = false
 }
 
+variable "use_source_bucket" {
+  type = bool
+  default = true
+}
+variable "base_origin_url" {
+  type = string
+  default = ""
+}
+
 ################
 # Debug Settings
 ################
