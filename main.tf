@@ -48,7 +48,7 @@ module "statics_deploy" {
   tf_next_module_root      = path.module
   role_to_assume = var.role_to_assume
   use_awscli_cross_account_for_static_upload = var.use_awscli_cross_account_for_static_upload
-  role_name = var.role_name_prefix
+  role_name_prefix = var.role_name_prefix
 }
 
 # Lambda
