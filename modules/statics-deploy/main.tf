@@ -61,6 +61,7 @@ resource "aws_s3_bucket_acl" "static_deploy" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "static_deploy" {
+  depends_on = [aws_s3_bucket_ownership_controls.static_deploy]
   bucket = aws_s3_bucket.static_deploy.id
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -68,7 +69,6 @@ resource "aws_s3_bucket_ownership_controls" "static_deploy" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "static_deploy" {
-  depends_on = [aws_s3_bucket_ownership_controls.static_deploy]
   bucket     = aws_s3_bucket.static_deploy.id
 
   rule {

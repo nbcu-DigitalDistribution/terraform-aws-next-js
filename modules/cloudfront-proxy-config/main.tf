@@ -14,10 +14,18 @@ resource "aws_s3_bucket" "proxy_config_store" {
   tags          = merge(var.tags, var.tags_s3_bucket)
 }
 
-resource "aws_s3_bucket_acl" "proxy_config_store" {
+resource "aws_s3_bucket_ownership_controls" "proxy_config_store" {
   bucket = aws_s3_bucket.proxy_config_store.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
 }
+resource "aws_s3_bucket_acl" "proxy_config_store" {
+  depends_on = [aws_s3_bucket_ownership_controls.proxy_config_store]
+  bucket     = aws_s3_bucket.proxy_config_store.id
+  acl        = "private"
+}
+
 
 data "aws_iam_policy_document" "cf_access" {
   statement {
