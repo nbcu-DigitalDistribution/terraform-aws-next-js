@@ -14,9 +14,17 @@ resource "aws_s3_bucket" "static_upload" {
   tags = merge(var.tags, var.tags_s3_bucket)
 }
 
-resource "aws_s3_bucket_acl" "static_upload" {
+resource "aws_s3_bucket_ownership_controls" "static_upload" {
   bucket = aws_s3_bucket.static_upload.id
-  acl    = "private"
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "static_upload" {
+  depends_on = [aws_s3_bucket_ownership_controls.static_upload]
+  bucket     = aws_s3_bucket.static_upload.id
+  acl        = "private"
 }
 
 # We are using versioning here to ensure that no file gets overridden at upload
@@ -52,8 +60,16 @@ resource "aws_s3_bucket_acl" "static_deploy" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "static_deploy" {
+resource "aws_s3_bucket_ownership_controls" "static_deploy" {
   bucket = aws_s3_bucket.static_deploy.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "static_deploy" {
+  depends_on = [aws_s3_bucket_ownership_controls.static_deploy]
+  bucket     = aws_s3_bucket.static_deploy.id
 
   rule {
     id = "Expire static assets"
@@ -225,7 +241,7 @@ module "deploy_trigger" {
 
   attach_policy_jsons    = true
   number_of_policy_jsons = 3
-  policy_jsons = [
+  policy_jsons           = [
     data.aws_iam_policy_document.access_static_deploy.json,
     data.aws_iam_policy_document.access_static_upload.json,
     data.aws_iam_policy_document.access_sqs_queue.json
@@ -252,7 +268,7 @@ module "deploy_trigger" {
 ###########################
 
 resource "null_resource" "static_s3_upload_awscli" {
-  count = var.use_awscli_for_static_upload ? 1 : 0
+  count    = var.use_awscli_for_static_upload ? 1 : 0
   triggers = {
     static_files_archive = filemd5(var.static_files_archive)
   }
@@ -268,13 +284,13 @@ resource "null_resource" "static_s3_upload_awscli" {
 }
 
 resource "null_resource" "static_s3_upload_awscli_for_cross_account" {
-  count = var.use_awscli_cross_account_for_static_upload ? 1 : 0
+  count    = var.use_awscli_cross_account_for_static_upload ? 1 : 0
   triggers = {
     static_files_archive = filemd5(var.static_files_archive)
   }
 
   provisioner "local-exec" {
-    command = <<-EOT
+    command     = <<-EOT
       export AWS_ROLE_TO_ASSUME=${var.role_to_assume}
       export REGION=${aws_s3_bucket.static_upload.region}
       export ARCHIVE_PATH=${abspath(var.static_files_archive)}
@@ -292,7 +308,7 @@ resource "null_resource" "static_s3_upload_awscli_for_cross_account" {
 }
 
 resource "null_resource" "static_s3_upload" {
-  count = var.use_awscli_for_static_upload || var.use_awscli_cross_account_for_static_upload ? 0 : 1
+  count    = var.use_awscli_for_static_upload || var.use_awscli_cross_account_for_static_upload ? 0 : 1
   triggers = {
     static_files_archive = filemd5(var.static_files_archive)
   }
