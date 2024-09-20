@@ -1,7 +1,7 @@
 locals {
   # next-tf config
   config_dir           = trimsuffix(var.next_tf_dir, "/")
-  config_file          = jsondecode(file("${local.config_dir}/config.json"))
+  config_file          = fileexists(local.config_file_path) ? jsondecode(file(local.config_file_path)) : {}
   lambdas              = lookup(local.config_file, "lambdas", {})
   static_files_archive = "${local.config_dir}/${lookup(local.config_file, "staticFilesArchive", "")}"
 
